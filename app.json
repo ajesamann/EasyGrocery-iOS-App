@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "EasyGrocery",
+    "slug": "EasyGroceryApp",
+    "privacy": "public",
+    "sdkVersion": "36.0.0",
+    "platforms": ["ios"],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ajesamann.easygrocery"
+    }
+  },
+  "updates": {
+    "fallbackToCacheTimeout": 0
+  },
+  "assetBundlePatterns": ["**/*"]
+}
