@@ -1,6 +1,4 @@
 //the ids for the list and the control number for the completed items list
-let id = 0;
-let itemId = 0;
 let i = 0;
 
 //state for the lists
@@ -13,19 +11,18 @@ const lists = (state = [], action) => {
         {
           name: action.name,
           items: [],
-          completedItems: [],
-          id: id++
+          completedItems: []
         }
       ];
 
     //delete a list
     case "REMOVE_LIST":
-      return state.filter(list => list.id !== action.payload);
+      return state.filter((list, index) => index !== action.payload);
 
     //add a item to a specific list
     case "ADD_LIST_ITEM":
-      return state.map(list => {
-        if (action.listId === list.id) {
+      return state.map((list, index) => {
+        if (action.listId === index) {
           return {
             ...list,
             items: [
@@ -33,7 +30,6 @@ const lists = (state = [], action) => {
               {
                 itemName: action.itemName,
                 itemQuantity: action.itemQuantity,
-                itemId: itemId++,
                 isComplete: false
               }
             ]
@@ -44,12 +40,12 @@ const lists = (state = [], action) => {
 
     //check off an item once it has been completed
     case "COMPLETE_LIST_ITEM":
-      return state.map(list => {
-        if (action.listId === list.id) {
+      return state.map((list, index) => {
+        if (action.listId === index) {
           return {
             ...list,
-            items: list.items.map(item => {
-              if (action.itemId === item.itemId) {
+            items: list.items.map((item, index) => {
+              if (action.itemId === index) {
                 return { ...item, isComplete: action.isComplete };
               }
               return item;
@@ -61,12 +57,12 @@ const lists = (state = [], action) => {
 
     //delete an item from a specific list
     case "DELETE_LIST_ITEM":
-      return state.map(list => {
-        if (action.listId === list.id) {
+      return state.map((list, index) => {
+        if (action.listId === index) {
           list.completedItems.pop();
           return {
             ...list,
-            items: list.items.filter(item => item.itemId !== action.payload)
+            items: list.items.filter((item, index) => index !== action.payload)
           };
         }
         return list;
@@ -81,15 +77,15 @@ const lists = (state = [], action) => {
     since we only care to see the total number of completed items we don't need any specific information about the item */
     case "CHECK_ITEM":
       if (action.payload) {
-        return state.map(list => {
-          if (action.listId === list.id) {
+        return state.map((list, index) => {
+          if (action.listId === index) {
             list.completedItems.push(i++);
           }
           return list;
         });
       } else if (!action.payload) {
-        return state.map(list => {
-          if (action.listId === list.id) {
+        return state.map((list, index) => {
+          if (action.listId === index) {
             list.completedItems.pop();
           }
           return list;
@@ -98,11 +94,11 @@ const lists = (state = [], action) => {
 
     //reset all the list items to be unchecked
     case "RESET_LIST":
-      return state.map(list => {
-        if (action.payload === list.id) {
+      return state.map((list, index) => {
+        if (action.payload === index) {
           return {
             ...list,
-            items: list.items.map(item => {
+            items: list.items.map((item, index) => {
               return { ...item, isComplete: false };
               return item;
             }),

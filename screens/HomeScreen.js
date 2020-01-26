@@ -9,6 +9,7 @@ import {
   View,
   ActivityIndicator
 } from "react-native";
+import { SplashScreen, AppLoading } from "expo";
 import CreateNewListBtn from "../components/CreateNewListBtn";
 import Lists from "../components/Lists";
 import WelcomeMSG from "../components/WelcomeMSG";
@@ -53,6 +54,8 @@ class HomeScreen extends Component {
       return styles.darkWhite;
     } else if (this.props.themeColor === "amethyst") {
       return styles.darkAmethyst;
+    } else if (this.props.themeColor === "cheetah") {
+      return styles.darkCheetah;
     }
   };
 
@@ -69,6 +72,8 @@ class HomeScreen extends Component {
       return styles.darkWhiteText;
     } else if (this.props.themeColor === "amethyst") {
       return styles.darkAmethystText;
+    } else if (this.props.themeColor === "cheetah") {
+      return styles.darkCheetahText;
     }
   };
 
@@ -85,6 +90,8 @@ class HomeScreen extends Component {
       return styles.lightWhite;
     } else if (this.props.themeColor === "amethyst") {
       return styles.lightAmethyst;
+    } else if (this.props.themeColor === "cheetah") {
+      return styles.lightCheetah;
     }
   };
 
@@ -101,6 +108,8 @@ class HomeScreen extends Component {
       return styles.lightWhiteText;
     } else if (this.props.themeColor === "amethyst") {
       return styles.lightAmethystText;
+    } else if (this.props.themeColor === "cheetah") {
+      return styles.lightCheetahText;
     }
   };
 
@@ -117,6 +126,8 @@ class HomeScreen extends Component {
       return styles.white;
     } else if (this.props.themeColor === "amethyst") {
       return styles.amethyst;
+    } else if (this.props.themeColor === "cheetah") {
+      return styles.cheetah;
     }
   };
 
@@ -133,6 +144,8 @@ class HomeScreen extends Component {
       return styles.whiteText;
     } else if (this.props.themeColor === "amethyst") {
       return styles.amethystText;
+    } else if (this.props.themeColor === "cheetah") {
+      return styles.cheetahText;
     }
   };
 
@@ -149,6 +162,8 @@ class HomeScreen extends Component {
       return styles.whiteBorder;
     } else if (this.props.themeColor === "amethyst") {
       return styles.amethystBorder;
+    } else if (this.props.themeColor === "cheetah") {
+      return styles.cheetahBorder;
     }
   };
 
@@ -167,6 +182,7 @@ class HomeScreen extends Component {
             <CreateNewListBtn
               navigateToNewListInput={() =>
                 this.props.navigation.navigate("NewListInput", {
+                  lists: this.props.lists,
                   darkColor: this.darkThemeColor(),
                   normalColor: this.normalThemeColor(),
                   lightColor: this.lightThemeColor(),
@@ -255,11 +271,11 @@ class HomeScreen extends Component {
               </Text>
             ) : (
               <View>
-                {this.props.lists.map(list => (
+                {this.props.lists.map((list, index) => (
                   <Lists
-                    key={list.id}
+                    key={index}
                     name={list.name}
-                    id={list.id}
+                    id={index}
                     items={list.items}
                     removeList={this.state.toggleRemoveList}
                     completedItems={list.completedItems}
@@ -271,7 +287,7 @@ class HomeScreen extends Component {
                     lightColorText={this.lightThemeColorText()}
                     navigateToNewListItemInput={() =>
                       this.props.navigation.navigate("NewListItemInput", {
-                        listId: list.id,
+                        listId: index,
                         name: list.name,
                         darkColor: this.darkThemeColor(),
                         normalColor: this.normalThemeColor(),
@@ -287,7 +303,15 @@ class HomeScreen extends Component {
             )}
           </ScrollView>
         ) : (
-          <ActivityIndicator size="small" style={{ marginBottom: 15 }} />
+          <AppLoading
+            startAsync={this.componentDidMount}
+            onFinish={() => {
+              this.state.fontsLoaded
+                ? SplashScreen.hide()
+                : SplashScreen.preventAutoHide();
+            }}
+            onError={console.warn}
+          />
         )}
       </SafeAreaView>
     );
@@ -474,6 +498,34 @@ const styles = StyleSheet.create({
 
   amethystText: {
     color: "#852eff"
+  },
+
+  darkCheetah: {
+    backgroundColor: "#1a1a1a"
+  },
+
+  darkCheetahText: {
+    color: "#1a1a1a"
+  },
+
+  lightCheetah: {
+    backgroundColor: "#edc86d"
+  },
+
+  lightCheetahText: {
+    color: "#edc86d"
+  },
+
+  cheetah: {
+    backgroundColor: "#DDAA36"
+  },
+
+  cheetahBorder: {
+    borderColor: "#DDAA36"
+  },
+
+  cheetahText: {
+    color: "#DDAA36"
   },
 
   //colors for themes ----------------------------------

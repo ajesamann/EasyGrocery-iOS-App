@@ -15,6 +15,7 @@ class NewListInputScreen extends Component {
           normalColor={this.props.navigation.getParam("normalColor")}
           normalColorText={this.props.navigation.getParam("normalColorText")}
           borderColor={this.props.navigation.getParam("borderColor")}
+          lists={this.props.navigation.getParam("lists")}
         />
       </SafeAreaView>
     );

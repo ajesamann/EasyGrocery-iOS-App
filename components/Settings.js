@@ -99,7 +99,7 @@ class Settings extends Component {
           <Text style={styles.settingsTitle}>Settings</Text>
         </View>
         {this.state.tooLong &&
-        this.state.welcomeMsg.length > 13 &&
+        this.state.welcomeMsg.length > 16 &&
         this.state.changeWelcomeMessage ? (
           <Animatable.View
             animation={"fadeIn"}
@@ -114,7 +114,7 @@ class Settings extends Component {
               color="#ff4a4a"
             />
             <Text style={styles.errorText}>
-              Message must be less than 14 characters!
+              Message must be less than 17 characters!
             </Text>
           </Animatable.View>
         ) : null}
@@ -225,6 +225,7 @@ class Settings extends Component {
             <Picker.Item label="Preppy Pink" value="pink" />
             <Picker.Item label="Slime Green" value="green" />
             <Picker.Item label="Amethyst" value="amethyst" />
+            <Picker.Item label="Cheetah" value="cheetah" />
           </Picker>
         </View>
         {/**delete all lists from the state button*/}
@@ -247,7 +248,7 @@ class Settings extends Component {
               this.showSuccessMsg();
             } else if (this.state.welcomeMsg.length === 0) {
               this.setState({ isEmpty: true });
-            } else if (this.state.welcomeMsg.length > 13) {
+            } else if (this.state.welcomeMsg.length > 16) {
               this.setState({ tooLong: true });
             } else {
               this.setColorTheme(this.state.themeColor);

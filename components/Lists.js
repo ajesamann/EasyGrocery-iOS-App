@@ -202,11 +202,11 @@ class Lists extends Component {
                 )}
               </TouchableOpacity>
               {/**all the list items */}
-              {this.props.items.map(item => (
+              {this.props.items.map((item, index) => (
                 <ListItem
-                  key={item.itemId}
+                  key={index}
                   listId={this.props.id}
-                  itemId={item.itemId}
+                  itemId={index}
                   name={item.itemName}
                   darkColor={this.props.darkColor}
                   normalColor={this.props.normalColor}
