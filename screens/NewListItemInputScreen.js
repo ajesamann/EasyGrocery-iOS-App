@@ -17,6 +17,7 @@ class NewListItemInputScreen extends Component {
           darkColor={this.props.navigation.getParam("darkColor")}
           lightColor={this.props.navigation.getParam("lightColor")}
           normalColor={this.props.navigation.getParam("normalColor")}
+          lightColorText={this.props.navigation.getParam("lightColorText")}
           normalColorText={this.props.navigation.getParam("normalColorText")}
           borderColor={this.props.navigation.getParam("borderColor")}
         />

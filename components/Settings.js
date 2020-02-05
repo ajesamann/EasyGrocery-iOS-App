@@ -99,7 +99,7 @@ class Settings extends Component {
           <Text style={styles.settingsTitle}>Settings</Text>
         </View>
         {this.state.tooLong &&
-        this.state.welcomeMsg.length > 16 &&
+        this.state.welcomeMsg.length > 20 &&
         this.state.changeWelcomeMessage ? (
           <Animatable.View
             animation={"fadeIn"}
@@ -114,7 +114,7 @@ class Settings extends Component {
               color="#ff4a4a"
             />
             <Text style={styles.errorText}>
-              Message must be less than 17 characters!
+              Message must be less than 21 characters!
             </Text>
           </Animatable.View>
         ) : null}
@@ -248,7 +248,7 @@ class Settings extends Component {
               this.showSuccessMsg();
             } else if (this.state.welcomeMsg.length === 0) {
               this.setState({ isEmpty: true });
-            } else if (this.state.welcomeMsg.length > 16) {
+            } else if (this.state.welcomeMsg.length > 20) {
               this.setState({ tooLong: true });
             } else {
               this.setColorTheme(this.state.themeColor);

@@ -6,11 +6,12 @@ import {
   View,
   StyleSheet,
   Text,
-  SafeAreaView
+  SafeAreaView,
+  Picker
 } from "react-native";
 import { connect } from "react-redux";
 import NumericInput from "react-native-numeric-input";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Ionicons, Entypo } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import * as Font from "expo-font";
 
@@ -52,6 +53,18 @@ class NewListItemInput extends Component {
     }, 2500);
   };
 
+  increaseQuantity = () => {
+    this.setState({ itemQuantity: this.state.itemQuantity + 1 });
+  };
+
+  decreaseQuantity = () => {
+    if (this.state.itemQuantity === 1) {
+      null;
+    } else {
+      this.setState({ itemQuantity: this.state.itemQuantity - 1 });
+    }
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.nlContainer}>
@@ -86,7 +99,7 @@ class NewListItemInput extends Component {
             </Text>
           </Animatable.View>
         ) : null}
-        {this.state.tooLong === true && this.state.itemName.length > 14 ? (
+        {this.state.tooLong === true && this.state.itemName.length > 20 ? (
           <Animatable.View
             animation={"fadeIn"}
             duration={450}
@@ -94,7 +107,7 @@ class NewListItemInput extends Component {
             style={styles.warningText}
           >
             <Text style={{ color: "#fff", fontFamily: "Raleway-Medium" }}>
-              Item name must be less than 15 characters!
+              Item name must be less than 21 characters!
             </Text>
           </Animatable.View>
         ) : null}
@@ -110,26 +123,46 @@ class NewListItemInput extends Component {
             </Text>
           </Animatable.View>
         ) : null}
-        <TextInput
-          style={[styles.listNameInput, this.props.borderColor]}
-          returnKeyType="done"
-          placeholder="Name of item"
-          value={this.state.itemName}
-          onChangeText={text => this.setState({ itemName: text })}
-        />
-        <View style={styles.quantityInput}>
-          <NumericInput
-            value={this.state.itemQuantity}
-            onChange={value => this.setState({ itemQuantity: value })}
-            totalWidth={200}
-            totalHeight={50}
-            initValue={1}
-            minValue={1}
-            rightButtonBackgroundColor={"#757575"}
-            leftButtonBackgroundColor={"#757575"}
-            iconStyle={{ color: "white" }}
-            borderColor={"white"}
+        <View style={[styles.inputWrapper, this.props.borderColor]}>
+          <TextInput
+            style={[styles.listNameInput, this.props.borderColor]}
+            returnKeyType="done"
+            placeholder="Name of item"
+            value={this.state.itemName}
+            onChangeText={text => this.setState({ itemName: text })}
           />
+          {/**ITEM QUANTITY*/}
+          <View style={styles.quantityInput}>
+            <TouchableOpacity
+              style={[styles.quantityBtns, this.props.normalColor]}
+              onPress={() => {
+                this.decreaseQuantity();
+              }}
+            >
+              <Entypo
+                name="minus"
+                style={this.props.lightColorText}
+                size={29}
+              />
+            </TouchableOpacity>
+            <View>
+              <Text style={[styles.quantity, this.props.normalColorText]}>
+                {this.state.itemQuantity}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.quantityBtns, this.props.normalColor]}
+              onPress={() => {
+                this.increaseQuantity();
+              }}
+            >
+              <Ionicons
+                name="md-add"
+                style={this.props.lightColorText}
+                size={29}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         {/**add item to specific list button*/}
         <TouchableOpacity
@@ -137,7 +170,7 @@ class NewListItemInput extends Component {
           onPress={() => {
             if (this.state.itemName.length === 0) {
               this.setState({ isEmpty: true, itemQuantity: 1 });
-            } else if (this.state.itemName.length > 14) {
+            } else if (this.state.itemName.length > 20) {
               this.setState({ tooLong: true, itemQuantity: 1 });
             } else {
               this.addItemToList(this.state.itemName, this.state.itemQuantity);
@@ -162,15 +195,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#fff"
-  },
-
-  listNameInput: {
-    width: 200,
-    paddingBottom: 8,
-    borderBottomWidth: 2,
-    fontSize: 18,
-    textAlign: "center",
-    fontFamily: "Raleway-Medium"
   },
 
   button: {
@@ -260,11 +284,39 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
 
+  inputWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderWidth: 2,
+    width: 335
+  },
+
   quantityInput: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+
+  quantityBtns: {
+    width: 45,
+    height: 45,
     justifyContent: "center",
-    alignItems: "center",
-    marginTop: 50
+    alignItems: "center"
+  },
+
+  quantity: {
+    fontSize: 18,
+    marginRight: 15,
+    marginLeft: 15
+  },
+
+  listNameInput: {
+    fontSize: 18,
+    textAlign: "left",
+    fontFamily: "Raleway-Medium",
+    paddingLeft: 10,
+    width: 180
   },
 
   titleContainer: {

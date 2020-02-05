@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import ListItem from "../components/ListItem";
 import { Foundation } from "@expo/vector-icons";
 import * as Font from "expo-font";
+import * as Animatable from "react-native-animatable";
 
 class HomeScreen extends Component {
   state = {
@@ -30,9 +31,6 @@ class HomeScreen extends Component {
       "Raleway-Medium": require("../assets/fonts/Raleway-Medium.ttf"),
       "Raleway-Light": require("../assets/fonts/Raleway-Light.ttf")
     });
-
-    //what for fonts to load before any other components show
-    this.setState({ fontLoaded: true });
   }
 
   //when navigating away from the page, turn off the toggle for the delete list button if it's on
@@ -292,6 +290,7 @@ class HomeScreen extends Component {
                         darkColor: this.darkThemeColor(),
                         normalColor: this.normalThemeColor(),
                         lightColor: this.lightThemeColor(),
+                        lightColorText: this.lightThemeColorText(),
                         normalColorText: this.normalThemeColorText(),
                         borderColor: this.borderColor()
                       })
@@ -306,9 +305,7 @@ class HomeScreen extends Component {
           <AppLoading
             startAsync={this.componentDidMount}
             onFinish={() => {
-              this.state.fontsLoaded
-                ? SplashScreen.hide()
-                : SplashScreen.preventAutoHide();
+              this.setState({ fontLoaded: true });
             }}
             onError={console.warn}
           />

@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
 
-  itemNameText: { marginLeft: 15, fontSize: 16, fontFamily: "Raleway-Medium" },
+  itemNameText: { fontSize: 16, fontFamily: "Raleway-Medium" },
 
   seperator: {
     width: 2,
