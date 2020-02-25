@@ -5,7 +5,7 @@ import { persistStore, persistReducer } from "redux-persist";
 
 //persist the state to AsyncStorage, using root as the key, if you change the key it's like moving to a new house, nothing will be there that was in the old key
 const persistConfig = {
-  key: "root",
+  key: "main",
   storage: AsyncStorage
 };
 

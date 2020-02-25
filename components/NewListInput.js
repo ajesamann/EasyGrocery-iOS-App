@@ -32,7 +32,11 @@ class NewListInput extends Component {
 
   //add item to the specified list
   addToList = name => {
-    this.props.dispatch({ type: "CREATE_NEW_LIST", name });
+    this.props.dispatch({
+      type: "CREATE_NEW_LIST",
+      name,
+      uniqueNum: this.generateUniqueId()
+    });
     this.setState({
       tooLong: false,
       isEmpty: false,
@@ -44,23 +48,26 @@ class NewListInput extends Component {
     }, 2500);
   };
 
+  //create a unique id for each list by generating a random number, yes i know this isnt that efficient but i was gonna shoot my brains out
+  generateUniqueId = () => {
+    let lists = this.props.lists;
+    let randomNumber = getRandomInt(0, 75000);
+    if (lists.length === 0) {
+      return getRandomInt(0, 75000);
+    } else if (lists.length > 0) {
+      for (let i = 0; i < lists.length; i++) {
+        if (lists[i].listId === randomNumber) {
+          return getRandomInt(0, 75000);
+        } else {
+          return randomNumber;
+        }
+      }
+    }
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.nlContainer}>
-        {/**go back to list aka homescreen button */}
-        <TouchableOpacity
-          style={styles.goBack}
-          onPress={this.props.goBackToMyLists}
-        >
-          <AntDesign
-            name="leftcircleo"
-            style={[styles.backIcon, this.props.normalColorText]}
-            size={28}
-          />
-          <Text style={[styles.goBackText, this.props.normalColorText]}>
-            Go back to my lists
-          </Text>
-        </TouchableOpacity>
         {this.state.listAdded === true ? (
           <Animatable.View
             animation={"fadeIn"}
@@ -81,7 +88,7 @@ class NewListInput extends Component {
             style={styles.warningText}
           >
             <Text style={{ color: "#fff", fontFamily: "Raleway-Medium" }}>
-              List name must be less than 16 characters!
+              List name can only be 15 characters!
             </Text>
           </Animatable.View>
         ) : null}
@@ -122,19 +129,47 @@ class NewListInput extends Component {
           </View>
           <Text style={styles.text}>Create list</Text>
         </TouchableOpacity>
+        {/**go back to list aka homescreen button */}
+        <TouchableOpacity
+          style={styles.goBack}
+          onPress={this.props.goBackToMyLists}
+        >
+          <AntDesign
+            name="leftcircleo"
+            style={[styles.backIcon, this.props.normalColorText]}
+            size={28}
+          />
+          <Text style={[styles.goBackText, this.props.normalColorText]}>
+            Go back to my lists
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
 }
 
-export default connect()(NewListInput);
+//get a random number for the list id
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+//grabbing state from redux
+const mapStateToProps = state => {
+  return {
+    lists: state.lists
+  };
+};
+
+export default connect(mapStateToProps)(NewListInput);
 
 const styles = StyleSheet.create({
   nlContainer: {
-    flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff"
+    justifyContent: "space-between",
+    backgroundColor: "#fff",
+    height: 400
   },
 
   listNameInput: {
@@ -151,12 +186,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 100,
     flexDirection: "row",
-    marginTop: 40,
     justifyContent: "space-around",
-    alignItems: "center",
-    shadowOffset: { width: 0, height: 3 },
-    shadowColor: "black",
-    shadowOpacity: 0.15
+    alignItems: "center"
   },
 
   plusContainer: {
@@ -190,11 +221,9 @@ const styles = StyleSheet.create({
   },
 
   goBack: {
-    position: "absolute",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    bottom: 100
+    justifyContent: "center"
   },
 
   goBackText: {
@@ -210,8 +239,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "#ff4a4a",
     color: "#fff",
-    position: "absolute",
-    top: 150,
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center"
@@ -223,8 +250,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "#4fc951",
     color: "#fff",
-    position: "absolute",
-    top: 150,
     justifyContent: "center",
     alignItems: "center"
   }

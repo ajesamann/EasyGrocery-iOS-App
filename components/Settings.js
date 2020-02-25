@@ -98,170 +98,174 @@ class Settings extends Component {
         <View style={styles.settingsTitleContainer}>
           <Text style={styles.settingsTitle}>Settings</Text>
         </View>
-        {this.state.tooLong &&
-        this.state.welcomeMsg.length > 20 &&
-        this.state.changeWelcomeMessage ? (
-          <Animatable.View
-            animation={"fadeIn"}
-            duration={450}
-            easing={"ease-in-out"}
-            style={styles.settingsSaved}
-          >
-            <AntDesign
-              name="exclamationcircle"
-              style={styles.backIcon}
-              size={25}
-              color="#ff4a4a"
-            />
-            <Text style={styles.errorText}>
-              Message must be less than 21 characters!
-            </Text>
-          </Animatable.View>
-        ) : null}
-        {this.state.isEmpty &&
-        this.state.welcomeMsg.length === 0 &&
-        this.state.changeWelcomeMessage ? (
-          <Animatable.View
-            animation={"fadeIn"}
-            duration={450}
-            easing={"ease-in-out"}
-            style={styles.settingsSaved}
-          >
-            <AntDesign
-              name="exclamationcircle"
-              style={styles.backIcon}
-              size={25}
-              color="#ff4a4a"
-            />
-            <Text style={styles.errorText}>Message can't be empty!</Text>
-          </Animatable.View>
-        ) : null}
-        {this.state.settingsSaved ? (
-          <Animatable.View
-            animation={"fadeIn"}
-            duration={450}
-            easing={"ease-in-out"}
-            style={styles.settingsSaved}
-          >
-            <Ionicons
-              name="ios-checkmark-circle"
-              style={styles.backIcon}
-              size={25}
-              color="#35b84e"
-            />
-            <Text style={styles.settingsSavedText}>
-              Settings saved successfully
-            </Text>
-          </Animatable.View>
-        ) : null}
-        {this.state.allListsDeleted && this.state.settingsSaved === false ? (
-          <Animatable.View
-            animation={"fadeIn"}
-            duration={450}
-            easing={"ease-in-out"}
-            style={styles.settingsSaved}
-          >
-            <Ionicons
-              name="ios-checkmark-circle"
-              style={styles.backIcon}
-              size={25}
-              color="#35b84e"
-            />
-            <Text style={styles.settingsSavedText}>
-              All lists have been deleted
-            </Text>
-          </Animatable.View>
-        ) : null}
-        {/**custom welcome message input*/}
-        <View style={styles.customMsgContainerAll}>
-          <View style={styles.customWelcomeMessage}>
-            <Text style={styles.customWelcomeMessageText}>
-              Custom Welcome Message
-            </Text>
-            <Switch
-              onValueChange={() => {
-                this.setState({
-                  changeWelcomeMessage: !this.state.changeWelcomeMessage
-                });
-                if (this.state.changeWelcomeMessage === false) {
-                  this.setState({
-                    welcomeMsg: "Welcome!"
-                  });
-                }
-                this.props.dispatch({
-                  type: "TOGGLE_USE_MSG",
-                  payload: this.state.changeWelcomeMessage
-                });
-              }}
-              value={this.state.changeWelcomeMessage}
-              style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
-              trackColor={{ false: "#35b84e", true: "#35b84e" }}
-            />
-          </View>
-          {this.state.changeWelcomeMessage ? (
-            <View style={styles.customMsgInputContainer}>
-              <TextInput
-                style={styles.customWelcomeMessageTextInput}
-                placeholder="Custom message"
-                value={this.state.welcomeMsg}
-                returnKeyType="done"
-                onChangeText={text => this.setState({ welcomeMsg: text })}
+        <View style={styles.settingsMessages}>
+          {this.state.tooLong &&
+          this.state.welcomeMsg.length > 20 &&
+          this.state.changeWelcomeMessage ? (
+            <Animatable.View
+              animation={"fadeIn"}
+              duration={450}
+              easing={"ease-in-out"}
+              style={styles.settingsSaved}
+            >
+              <AntDesign
+                name="exclamationcircle"
+                style={styles.backIcon}
+                size={25}
+                color="#ff4a4a"
               />
-            </View>
+              <Text style={styles.errorText}>
+                Message must be less than 21 characters!
+              </Text>
+            </Animatable.View>
+          ) : null}
+          {this.state.isEmpty &&
+          this.state.welcomeMsg.length === 0 &&
+          this.state.changeWelcomeMessage ? (
+            <Animatable.View
+              animation={"fadeIn"}
+              duration={450}
+              easing={"ease-in-out"}
+              style={styles.settingsSaved}
+            >
+              <AntDesign
+                name="exclamationcircle"
+                style={styles.backIcon}
+                size={25}
+                color="#ff4a4a"
+              />
+              <Text style={styles.errorText}>Message can't be empty!</Text>
+            </Animatable.View>
+          ) : null}
+          {this.state.settingsSaved ? (
+            <Animatable.View
+              animation={"fadeIn"}
+              duration={450}
+              easing={"ease-in-out"}
+              style={styles.settingsSaved}
+            >
+              <Ionicons
+                name="ios-checkmark-circle"
+                style={styles.backIcon}
+                size={25}
+                color="#35b84e"
+              />
+              <Text style={styles.settingsSavedText}>
+                Settings saved successfully
+              </Text>
+            </Animatable.View>
+          ) : null}
+          {this.state.allListsDeleted && this.state.settingsSaved === false ? (
+            <Animatable.View
+              animation={"fadeIn"}
+              duration={450}
+              easing={"ease-in-out"}
+              style={styles.settingsSaved}
+            >
+              <Ionicons
+                name="ios-checkmark-circle"
+                style={styles.backIcon}
+                size={25}
+                color="#35b84e"
+              />
+              <Text style={styles.settingsSavedText}>
+                All lists have been deleted
+              </Text>
+            </Animatable.View>
           ) : null}
         </View>
-        {/**where the user selects a theme*/}
-        <View style={styles.selectorContainer}>
-          <Text style={styles.selectorText}>Change Theme:</Text>
-          <Picker
-            selectedValue={this.state.themeColor}
-            onValueChange={theme => this.setState({ themeColor: theme })}
-            style={styles.themeSelector}
-            itemStyle={styles.themeItems}
+        <View style={styles.settingsContent}>
+          {/**custom welcome message input*/}
+          <View style={styles.customMsgContainerAll}>
+            <View style={styles.customWelcomeMessage}>
+              <Text style={styles.customWelcomeMessageText}>
+                Custom Welcome Message
+              </Text>
+              <Switch
+                onValueChange={() => {
+                  this.setState({
+                    changeWelcomeMessage: !this.state.changeWelcomeMessage
+                  });
+                  if (this.state.changeWelcomeMessage === false) {
+                    this.setState({
+                      welcomeMsg: "Welcome!"
+                    });
+                  }
+                  this.props.dispatch({
+                    type: "TOGGLE_USE_MSG",
+                    payload: this.state.changeWelcomeMessage
+                  });
+                }}
+                value={this.state.changeWelcomeMessage}
+                style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
+                trackColor={{ false: "#35b84e", true: "#35b84e" }}
+              />
+            </View>
+            {this.state.changeWelcomeMessage ? (
+              <View style={styles.customMsgInputContainer}>
+                <TextInput
+                  style={styles.customWelcomeMessageTextInput}
+                  placeholder="Custom message"
+                  value={this.state.welcomeMsg}
+                  returnKeyType="done"
+                  onChangeText={text => this.setState({ welcomeMsg: text })}
+                />
+              </View>
+            ) : null}
+          </View>
+          {/**where the user selects a theme*/}
+          <View style={styles.selectorContainer}>
+            <Text style={styles.selectorText}>Change Theme:</Text>
+            <Picker
+              selectedValue={this.state.themeColor}
+              onValueChange={theme => this.setState({ themeColor: theme })}
+              style={styles.themeSelector}
+              itemStyle={styles.themeItems}
+            >
+              <Picker.Item label="Classic Blue" value="blue" />
+              <Picker.Item label="Midnight Black" value="black" />
+              <Picker.Item label="Ghost Grey" value="white" />
+              <Picker.Item label="Preppy Pink" value="pink" />
+              <Picker.Item label="Slime Green" value="green" />
+              <Picker.Item label="Amethyst" value="amethyst" />
+              <Picker.Item label="Cheetah" value="cheetah" />
+            </Picker>
+          </View>
+          {/**delete all lists from the state button*/}
+          <TouchableOpacity
+            style={styles.deleteAllButton}
+            onPress={() => this.deleteAllLists()}
           >
-            <Picker.Item label="Classic Blue" value="blue" />
-            <Picker.Item label="Midnight Black" value="black" />
-            <Picker.Item label="Ghost Grey" value="white" />
-            <Picker.Item label="Preppy Pink" value="pink" />
-            <Picker.Item label="Slime Green" value="green" />
-            <Picker.Item label="Amethyst" value="amethyst" />
-            <Picker.Item label="Cheetah" value="cheetah" />
-          </Picker>
+            <Text style={styles.deleteAllText}>Delete all lists</Text>
+          </TouchableOpacity>
+          {/**save settings button*/}
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => {
+              if (this.state.changeWelcomeMessage === false) {
+                this.setColorTheme(this.state.themeColor);
+                this.setMessage(
+                  this.state.welcomeMsg,
+                  this.state.changeWelcomeMessage
+                );
+                this.showSuccessMsg();
+              } else if (this.state.welcomeMsg.length === 0) {
+                this.setState({ isEmpty: true });
+              } else if (this.state.welcomeMsg.length > 20) {
+                this.setState({ tooLong: true });
+              } else {
+                this.setColorTheme(this.state.themeColor);
+                this.setMessage(
+                  this.state.welcomeMsg,
+                  this.state.changeWelcomeMessage
+                );
+                this.showSuccessMsg();
+              }
+            }}
+          >
+            <Text style={styles.saveText}>Save settings</Text>
+          </TouchableOpacity>
         </View>
-        {/**delete all lists from the state button*/}
-        <TouchableOpacity
-          style={styles.deleteAllButton}
-          onPress={() => this.deleteAllLists()}
-        >
-          <Text style={styles.deleteAllText}>Delete all lists</Text>
-        </TouchableOpacity>
-        {/**save settings button*/}
-        <TouchableOpacity
-          style={styles.saveButton}
-          onPress={() => {
-            if (this.state.changeWelcomeMessage === false) {
-              this.setColorTheme(this.state.themeColor);
-              this.setMessage(
-                this.state.welcomeMsg,
-                this.state.changeWelcomeMessage
-              );
-              this.showSuccessMsg();
-            } else if (this.state.welcomeMsg.length === 0) {
-              this.setState({ isEmpty: true });
-            } else if (this.state.welcomeMsg.length > 20) {
-              this.setState({ tooLong: true });
-            } else {
-              this.setColorTheme(this.state.themeColor);
-              this.setMessage(
-                this.state.welcomeMsg,
-                this.state.changeWelcomeMessage
-              );
-              this.showSuccessMsg();
-            }
-          }}
-        >
-          <Text style={styles.saveText}>Save settings</Text>
-        </TouchableOpacity>
         {/**go back to lists aka homescreen button*/}
         <TouchableOpacity
           style={styles.goBack}
@@ -286,13 +290,11 @@ const styles = StyleSheet.create({
   settingsContainer: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     backgroundColor: "#fff"
   },
 
   settingsTitleContainer: {
-    position: "absolute",
-    top: 65,
     justifyContent: "center",
     alignItems: "center"
   },
@@ -380,8 +382,6 @@ const styles = StyleSheet.create({
   },
 
   settingsSaved: {
-    position: "absolute",
-    top: 145,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center"
@@ -420,11 +420,9 @@ const styles = StyleSheet.create({
   },
 
   goBack: {
-    position: "absolute",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    bottom: 100
+    justifyContent: "center"
   },
 
   goBackText: {

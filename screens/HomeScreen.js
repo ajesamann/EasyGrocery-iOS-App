@@ -15,14 +15,15 @@ import Lists from "../components/Lists";
 import WelcomeMSG from "../components/WelcomeMSG";
 import { connect } from "react-redux";
 import ListItem from "../components/ListItem";
-import { Foundation } from "@expo/vector-icons";
+import { Foundation, Ionicons } from "@expo/vector-icons";
 import * as Font from "expo-font";
 import * as Animatable from "react-native-animatable";
 
 class HomeScreen extends Component {
   state = {
     toggleRemoveList: false,
-    fontLoaded: false
+    fontLoaded: false,
+    hideTop: false
   };
 
   //import the fonts
@@ -33,9 +34,19 @@ class HomeScreen extends Component {
     });
   }
 
+  //toggle hide top
+  toggleHideTop = () => {
+    this.setState({ hideTop: !this.state.hideTop });
+  };
+
   //when navigating away from the page, turn off the toggle for the delete list button if it's on
   turnOffToggle = () => {
     this.setState({ toggleRemoveList: false });
+  };
+
+  //when lists are empty force the top to show again if it's hidden
+  forceShowTop = () => {
+    this.props.lists.length === 1 ? this.setState({ hideTop: false }) : null;
   };
 
   //all the methods return the correct color depending on what theme was picked, there has to be a better way to do this lol it's so ugly
@@ -165,116 +176,275 @@ class HomeScreen extends Component {
     }
   };
 
+  //centering the top half based on if there is lists or not
+  center = () => {
+    if (this.props.lists.length > 1) {
+      return styles.centerNoFlex;
+    } else if (this.props.lists.length === 0) {
+      return styles.centerFlex;
+    }
+  };
+
   render() {
     return (
       <SafeAreaView style={[styles.homeContainer, this.darkThemeColor()]}>
         <StatusBar barStyle="light-content" />
-        <View style={styles.top}>
-          {/**welcome message*/}
-          <WelcomeMSG
-            welcomeMsg={this.props.welcomeMsg.message}
-            useCustomMsg={this.props.welcomeMsg.customMsgIsOn}
-          />
-          {/**create a new list button */}
-          <View style={styles.buttonAndGear}>
-            <CreateNewListBtn
-              navigateToNewListInput={() =>
-                this.props.navigation.navigate("NewListInput", {
-                  lists: this.props.lists,
-                  darkColor: this.darkThemeColor(),
-                  normalColor: this.normalThemeColor(),
-                  lightColor: this.lightThemeColor(),
-                  normalColorText: this.normalThemeColorText(),
-                  borderColor: this.borderColor()
-                })
-              }
-              darkColor={this.darkThemeColor()}
-              normalColor={this.normalThemeColor()}
-              lightColor={this.lightThemeColor()}
-              turnOffToggle={this.turnOffToggle}
+        <View
+          style={[
+            styles.top,
+            this.props.lists.length === 0 ? { marginBottom: 30 } : null
+          ]}
+        >
+          <View
+            style={this.state.hideTop ? { display: "none" } : styles.topHalf}
+          >
+            {/**welcome message*/}
+            <WelcomeMSG
+              welcomeMsg={this.props.welcomeMsg.message}
+              useCustomMsg={this.props.welcomeMsg.customMsgIsOn}
             />
-            {/**settings button */}
-            <TouchableOpacity
-              style={[styles.gear, this.normalThemeColor()]}
-              onPress={() => {
-                this.props.navigation.navigate("Settings", {
-                  useCustomMsg: this.props.welcomeMsg.customMsgIsOn,
-                  themeColor: this.props.themeColor,
-                  customMsg: this.props.welcomeMsg.message
-                });
-                this.turnOffToggle();
-              }}
-            >
-              <Foundation
-                name="wrench"
-                style={styles.gearIcon}
-                size={28}
-                color="white"
+            {/**create a new list button */}
+            <View style={styles.buttonAndGear}>
+              <CreateNewListBtn
+                navigateToNewListInput={() =>
+                  this.props.navigation.navigate("NewListInput", {
+                    darkColor: this.darkThemeColor(),
+                    normalColor: this.normalThemeColor(),
+                    lightColor: this.lightThemeColor(),
+                    normalColorText: this.normalThemeColorText(),
+                    borderColor: this.borderColor()
+                  })
+                }
+                darkColor={this.darkThemeColor()}
+                normalColor={this.normalThemeColor()}
+                lightColor={this.lightThemeColor()}
+                turnOffToggle={this.turnOffToggle}
               />
-            </TouchableOpacity>
+              {/**settings button */}
+              <TouchableOpacity
+                style={[styles.gear, this.normalThemeColor()]}
+                onPress={() => {
+                  this.props.navigation.navigate("Settings", {
+                    useCustomMsg: this.props.welcomeMsg.customMsgIsOn,
+                    themeColor: this.props.themeColor,
+                    customMsg: this.props.welcomeMsg.message
+                  });
+                  this.turnOffToggle();
+                }}
+              >
+                <Foundation
+                  name="wrench"
+                  style={styles.gearIcon}
+                  size={28}
+                  color="white"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
+          {/** above the lists info */}
+          {this.props.lists.length > 1 ? (
+            <View style={styles.aboveListsInfo}>
+              {this.props.lists.length === this.props.totalCompleted ? (
+                <View
+                  style={[
+                    styles.yourListsTextContainer,
+                    { backgroundColor: "#4fc951" }
+                  ]}
+                >
+                  <Ionicons
+                    name="ios-checkmark"
+                    style={{ marginRight: 5, fontSize: 30 }}
+                    size={25}
+                    color="white"
+                  />
+                  <Text style={styles.yourListsText}>All lists completed</Text>
+                </View>
+              ) : (
+                <View style={styles.completedAndLists}>
+                  <View
+                    style={[
+                      styles.yourListsTextContainer,
+                      this.lightThemeColor()
+                    ]}
+                  >
+                    <Text style={styles.yourListsText}>
+                      {this.props.lists.length} lists
+                    </Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.yourListsTextContainer,
+                      this.lightThemeColor()
+                    ]}
+                  >
+                    <Text style={styles.yourListsText}>
+                      {this.props.totalCompleted} Complete
+                    </Text>
+                  </View>
+                </View>
+              )}
+              <TouchableOpacity
+                style={styles.removeListsBtn}
+                onPress={() =>
+                  this.setState({
+                    toggleRemoveList: !this.state.toggleRemoveList
+                  })
+                }
+              >
+                {!this.state.toggleRemoveList ? (
+                  <View
+                    style={[
+                      styles.removeListsTextContainerNormal,
+                      this.normalThemeColor()
+                    ]}
+                  >
+                    <Text style={styles.removeListsBtnText}>Delete a list</Text>
+                  </View>
+                ) : (
+                  <View style={styles.removeListsTextContainerGreen}>
+                    <Text style={styles.removeListsBtnText}>I'm done!</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.hideTopBtn, this.darkThemeColor()]}
+                onPress={() => {
+                  this.toggleHideTop();
+                }}
+              >
+                {this.state.hideTop === false ? (
+                  <Ionicons
+                    name="ios-arrow-up"
+                    style={styles.arrowUpBtn}
+                    color="white"
+                    size={25}
+                  />
+                ) : (
+                  <Ionicons
+                    name="ios-arrow-down"
+                    style={styles.arrowDownBtn}
+                    color="white"
+                    size={25}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          ) : null}
+          {this.props.lists.length === 1 ? (
+            <View style={styles.aboveListsInfo}>
+              {this.props.lists.length === this.props.totalCompleted ? (
+                <View
+                  style={[
+                    styles.yourListsTextContainer,
+                    { backgroundColor: "#4fc951" }
+                  ]}
+                >
+                  <Ionicons
+                    name="ios-checkmark"
+                    style={{ marginRight: 5, fontSize: 30 }}
+                    size={25}
+                    color="white"
+                  />
+                  <Text style={styles.yourListsText}>All lists completed</Text>
+                </View>
+              ) : (
+                <View style={styles.completedAndLists}>
+                  <View
+                    style={[
+                      styles.yourListsTextContainer,
+                      this.lightThemeColor()
+                    ]}
+                  >
+                    <Text style={styles.yourListsText}>
+                      {this.props.lists.length} list
+                    </Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.yourListsTextContainer,
+                      this.lightThemeColor()
+                    ]}
+                  >
+                    <Text style={styles.yourListsText}>
+                      {this.props.totalCompleted} Complete
+                    </Text>
+                  </View>
+                </View>
+              )}
+              <TouchableOpacity
+                style={styles.removeListsBtn}
+                onPress={() =>
+                  this.setState({
+                    toggleRemoveList: !this.state.toggleRemoveList
+                  })
+                }
+              >
+                {!this.state.toggleRemoveList ? (
+                  <View
+                    style={[
+                      styles.removeListsTextContainerNormal,
+                      this.normalThemeColor()
+                    ]}
+                  >
+                    <Text style={styles.removeListsBtnText}>Delete a list</Text>
+                  </View>
+                ) : (
+                  <View style={styles.removeListsTextContainerGreen}>
+                    <Text style={styles.removeListsBtnText}>I'm done!</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.hideTopBtn, this.darkThemeColor()]}
+                onPress={() => {
+                  this.toggleHideTop();
+                }}
+              >
+                {this.state.hideTop === false ? (
+                  <Ionicons
+                    name="ios-arrow-up"
+                    style={styles.arrowUpBtn}
+                    color="white"
+                    size={25}
+                  />
+                ) : (
+                  <Ionicons
+                    name="ios-arrow-down"
+                    style={styles.arrowDownBtn}
+                    color="white"
+                    size={25}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          ) : null}
         </View>
-        {/**this scrollview contains the total amount of list text, the delete list button, and the lists themselves */}
+
+        {/**this scrollview contains the total amount of list's text, the delete list button, and the lists themselves */}
         {this.state.fontLoaded ? (
           <ScrollView
             style={[styles.listsContainer, this.normalThemeColor()]}
-            contentContainerStyle={styles.center}
+            contentContainerStyle={this.center()}
           >
-            {this.props.lists.length > 1 ? (
-              <View style={styles.aboveListsInfo}>
-                <Text style={styles.yourListsText}>
-                  You currently have {this.props.lists.length} lists{" "}
-                </Text>
-                <TouchableOpacity
-                  style={styles.removeListsBtn}
-                  onPress={() =>
-                    this.setState({
-                      toggleRemoveList: !this.state.toggleRemoveList
-                    })
-                  }
-                >
-                  {!this.state.toggleRemoveList ? (
-                    <Text style={styles.removeListsBtnText}>Delete a list</Text>
-                  ) : (
-                    <Text style={styles.removeListsBtnText}>I'm done!</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            ) : null}
-            {this.props.lists.length === 1 ? (
-              <View style={styles.aboveListsInfo}>
-                <Text style={styles.yourListsText}>
-                  You currently have {this.props.lists.length} list{" "}
-                </Text>
-                <TouchableOpacity
-                  style={styles.removeListsBtn}
-                  onPress={() =>
-                    this.setState({
-                      toggleRemoveList: !this.state.toggleRemoveList
-                    })
-                  }
-                >
-                  {!this.state.toggleRemoveList ? (
-                    <Text style={styles.removeListsBtnText}>Delete a list</Text>
-                  ) : (
-                    <Text style={styles.removeListsBtnText}>I'm done!</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            ) : null}
             {this.props.lists.length === 0 ? (
               <Text style={styles.listsEmptyMsg}>
                 You don't have any lists! To create a new list, press the create
                 new list button at the top!
               </Text>
             ) : (
-              <View>
+              <View style={styles.listsMainContainer}>
                 {this.props.lists.map((list, index) => (
                   <Lists
                     key={index}
                     name={list.name}
                     id={index}
+                    listId={list.listId}
+                    showTop={this.forceShowTop}
+                    lists={this.props.lists}
                     items={list.items}
+                    listComplete={list.listComplete}
+                    listsArray={this.props.listsArray}
+                    total={this.props.totalCompleted}
                     removeList={this.state.toggleRemoveList}
                     completedItems={list.completedItems}
                     darkColor={this.darkThemeColor()}
@@ -296,6 +466,7 @@ class HomeScreen extends Component {
                       })
                     }
                     turnOffToggle={this.turnOffToggle}
+                    totalPrice={list.totalPrice}
                   />
                 ))}
               </View>
@@ -320,7 +491,9 @@ const mapStateToProps = state => {
   return {
     lists: state.lists,
     welcomeMsg: state.welcomeMsg,
-    themeColor: state.themeColor
+    themeColor: state.themeColor,
+    totalCompleted: state.totalListsCompleted,
+    listsArray: state.listsCompleteArray
   };
 };
 
@@ -533,6 +706,19 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
 
+  topHalf: {
+    marginTop: 30,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  listsMainContainer: {
+    width: "100%",
+    paddingTop: 85,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
   newListInputContainer: {
     flex: 1,
     alignItems: "center",
@@ -543,8 +729,8 @@ const styles = StyleSheet.create({
   top: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 30,
-    marginBottom: 15
+    width: "100%",
+    zIndex: 100
   },
 
   gearIcon: {
@@ -569,54 +755,114 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
 
-  center: {
+  centerFlex: {
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    flex: 1
+  },
+
+  centerNoFlex: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 0
   },
 
   listsContainer: {
-    marginTop: 30,
-    alignSelf: "stretch"
+    width: "100%"
+  },
+
+  hideTopBtn: {
+    position: "absolute",
+    bottom: -20,
+    width: 34,
+    height: 34,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100,
+    shadowOffset: { width: 0, height: 3 },
+    shadowColor: "black",
+    shadowOpacity: 0.15
+  },
+
+  arrowDownBtn: {
+    position: "absolute",
+    top: 5
   },
 
   listsEmptyMsg: {
-    marginTop: 20,
     fontSize: 16.5,
     paddingRight: 40,
     paddingLeft: 40,
-    position: "absolute",
     textAlign: "center",
-    top: 250,
     color: "#fff",
     fontFamily: "Raleway-Light"
   },
 
   aboveListsInfo: {
-    marginTop: 35,
-    marginBottom: 30,
-    paddingRight: 50,
-    paddingLeft: 50,
+    width: "100%",
+    marginTop: 30,
+    paddingTop: 25,
+    paddingBottom: 35,
+    backgroundColor: "white",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    fontFamily: "Raleway-Light"
+    borderBottomWidth: 1,
+    borderColor: "#ededed",
+    position: "relative"
+  },
+
+  removeListsTextContainerNormal: {
+    height: 37,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  removeListsTextContainerGreen: {
+    backgroundColor: "#ff4a4a",
+    height: 37,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center"
   },
 
   yourListsText: {
-    fontSize: 19,
+    fontSize: 14,
     textAlign: "center",
     color: "white",
-    fontFamily: "Raleway-Light"
+    fontFamily: "Raleway-Medium"
   },
 
-  removeListsBtn: {
-    marginTop: 25,
-    marginBottom: 20
+  yourListsTextContainer: {
+    height: 37,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 100,
+    marginRight: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row"
   },
 
   removeListsBtnText: {
     color: "#fff",
-    textDecorationLine: "underline",
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Raleway-Medium"
+  },
+
+  completedAndLists: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  removeListsBtn: {
+    alignItems: "center",
+    justifyContent: "center"
   }
 });
