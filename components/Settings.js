@@ -229,6 +229,7 @@ class Settings extends Component {
               <Picker.Item label="Slime Green" value="green" />
               <Picker.Item label="Amethyst" value="amethyst" />
               <Picker.Item label="Cheetah" value="cheetah" />
+              <Picker.Item label="Juicy Orange" value="orange" />
             </Picker>
           </View>
           {/**delete all lists from the state button*/}

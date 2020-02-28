@@ -6,18 +6,15 @@ import {
   StyleSheet,
   Text,
   SafeAreaView,
-  View,
-  ActivityIndicator
+  View
 } from "react-native";
-import { SplashScreen, AppLoading } from "expo";
+import { AppLoading } from "expo";
 import CreateNewListBtn from "../components/CreateNewListBtn";
 import Lists from "../components/Lists";
 import WelcomeMSG from "../components/WelcomeMSG";
 import { connect } from "react-redux";
-import ListItem from "../components/ListItem";
 import { Foundation, Ionicons } from "@expo/vector-icons";
 import * as Font from "expo-font";
-import * as Animatable from "react-native-animatable";
 
 class HomeScreen extends Component {
   state = {
@@ -65,6 +62,8 @@ class HomeScreen extends Component {
       return styles.darkAmethyst;
     } else if (this.props.themeColor === "cheetah") {
       return styles.darkCheetah;
+    } else if (this.props.themeColor === "orange") {
+      return styles.darkOrange;
     }
   };
 
@@ -83,6 +82,8 @@ class HomeScreen extends Component {
       return styles.darkAmethystText;
     } else if (this.props.themeColor === "cheetah") {
       return styles.darkCheetahText;
+    } else if (this.props.themeColor === "orange") {
+      return styles.darkOrangeText;
     }
   };
 
@@ -101,6 +102,8 @@ class HomeScreen extends Component {
       return styles.lightAmethyst;
     } else if (this.props.themeColor === "cheetah") {
       return styles.lightCheetah;
+    } else if (this.props.themeColor === "orange") {
+      return styles.lightOrange;
     }
   };
 
@@ -119,6 +122,8 @@ class HomeScreen extends Component {
       return styles.lightAmethystText;
     } else if (this.props.themeColor === "cheetah") {
       return styles.lightCheetahText;
+    } else if (this.props.themeColor === "orange") {
+      return styles.lightOrangeText;
     }
   };
 
@@ -137,6 +142,8 @@ class HomeScreen extends Component {
       return styles.amethyst;
     } else if (this.props.themeColor === "cheetah") {
       return styles.cheetah;
+    } else if (this.props.themeColor === "orange") {
+      return styles.orange;
     }
   };
 
@@ -155,6 +162,8 @@ class HomeScreen extends Component {
       return styles.amethystText;
     } else if (this.props.themeColor === "cheetah") {
       return styles.cheetahText;
+    } else if (this.props.themeColor === "orange") {
+      return styles.orangeText;
     }
   };
 
@@ -173,6 +182,8 @@ class HomeScreen extends Component {
       return styles.amethystBorder;
     } else if (this.props.themeColor === "cheetah") {
       return styles.cheetahBorder;
+    } else if (this.props.themeColor === "orange") {
+      return styles.orangeBorder;
     }
   };
 
@@ -186,7 +197,7 @@ class HomeScreen extends Component {
   };
 
   render() {
-    return (
+    return this.state.fontLoaded ? (
       <SafeAreaView style={[styles.homeContainer, this.darkThemeColor()]}>
         <StatusBar barStyle="light-content" />
         <View
@@ -307,24 +318,22 @@ class HomeScreen extends Component {
                 )}
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.hideTopBtn, this.darkThemeColor()]}
+                style={styles.hideTopBtn}
                 onPress={() => {
                   this.toggleHideTop();
                 }}
               >
                 {this.state.hideTop === false ? (
                   <Ionicons
-                    name="ios-arrow-up"
-                    style={styles.arrowUpBtn}
-                    color="white"
-                    size={25}
+                    name="ios-arrow-dropup-circle"
+                    style={[styles.arrowUpBtn, this.darkThemeColorText()]}
+                    size={38}
                   />
                 ) : (
                   <Ionicons
-                    name="ios-arrow-down"
-                    style={styles.arrowDownBtn}
-                    color="white"
-                    size={25}
+                    name="ios-arrow-dropdown-circle"
+                    style={[styles.arrowDownBtn, this.darkThemeColorText()]}
+                    size={38}
                   />
                 )}
               </TouchableOpacity>
@@ -395,24 +404,22 @@ class HomeScreen extends Component {
                 )}
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.hideTopBtn, this.darkThemeColor()]}
+                style={styles.hideTopBtn}
                 onPress={() => {
                   this.toggleHideTop();
                 }}
               >
                 {this.state.hideTop === false ? (
                   <Ionicons
-                    name="ios-arrow-up"
-                    style={styles.arrowUpBtn}
-                    color="white"
-                    size={25}
+                    name="ios-arrow-dropup-circle"
+                    style={[styles.arrowUpBtn, this.darkThemeColorText()]}
+                    size={38}
                   />
                 ) : (
                   <Ionicons
-                    name="ios-arrow-down"
-                    style={styles.arrowDownBtn}
-                    color="white"
-                    size={25}
+                    name="ios-arrow-dropdown-circle"
+                    style={[styles.arrowDownBtn, this.darkThemeColorText()]}
+                    size={38}
                   />
                 )}
               </TouchableOpacity>
@@ -421,67 +428,65 @@ class HomeScreen extends Component {
         </View>
 
         {/**this scrollview contains the total amount of list's text, the delete list button, and the lists themselves */}
-        {this.state.fontLoaded ? (
-          <ScrollView
-            style={[styles.listsContainer, this.normalThemeColor()]}
-            contentContainerStyle={this.center()}
-          >
-            {this.props.lists.length === 0 ? (
-              <Text style={styles.listsEmptyMsg}>
-                You don't have any lists! To create a new list, press the create
-                new list button at the top!
-              </Text>
-            ) : (
-              <View style={styles.listsMainContainer}>
-                {this.props.lists.map((list, index) => (
-                  <Lists
-                    key={index}
-                    name={list.name}
-                    id={index}
-                    listId={list.listId}
-                    showTop={this.forceShowTop}
-                    lists={this.props.lists}
-                    items={list.items}
-                    listComplete={list.listComplete}
-                    listsArray={this.props.listsArray}
-                    total={this.props.totalCompleted}
-                    removeList={this.state.toggleRemoveList}
-                    completedItems={list.completedItems}
-                    darkColor={this.darkThemeColor()}
-                    normalColor={this.normalThemeColor()}
-                    lightColor={this.lightThemeColor()}
-                    darkColorText={this.darkThemeColorText()}
-                    normalColorText={this.normalThemeColorText()}
-                    lightColorText={this.lightThemeColorText()}
-                    navigateToNewListItemInput={() =>
-                      this.props.navigation.navigate("NewListItemInput", {
-                        listId: index,
-                        name: list.name,
-                        darkColor: this.darkThemeColor(),
-                        normalColor: this.normalThemeColor(),
-                        lightColor: this.lightThemeColor(),
-                        lightColorText: this.lightThemeColorText(),
-                        normalColorText: this.normalThemeColorText(),
-                        borderColor: this.borderColor()
-                      })
-                    }
-                    turnOffToggle={this.turnOffToggle}
-                    totalPrice={list.totalPrice}
-                  />
-                ))}
-              </View>
-            )}
-          </ScrollView>
-        ) : (
-          <AppLoading
-            startAsync={this.componentDidMount}
-            onFinish={() => {
-              this.setState({ fontLoaded: true });
-            }}
-            onError={console.warn}
-          />
-        )}
+        <ScrollView
+          style={[styles.listsContainer, this.normalThemeColor()]}
+          contentContainerStyle={this.center()}
+        >
+          {this.props.lists.length === 0 ? (
+            <Text style={styles.listsEmptyMsg}>
+              You don't have any lists! To create a new list, press the create
+              new list button at the top!
+            </Text>
+          ) : (
+            <View style={styles.listsMainContainer}>
+              {this.props.lists.map((list, index) => (
+                <Lists
+                  key={index}
+                  name={list.name}
+                  id={index}
+                  listId={list.listId}
+                  showTop={this.forceShowTop}
+                  lists={this.props.lists}
+                  items={list.items}
+                  listComplete={list.listComplete}
+                  listsArray={this.props.listsArray}
+                  total={this.props.totalCompleted}
+                  removeList={this.state.toggleRemoveList}
+                  completedItems={list.completedItems}
+                  darkColor={this.darkThemeColor()}
+                  normalColor={this.normalThemeColor()}
+                  lightColor={this.lightThemeColor()}
+                  darkColorText={this.darkThemeColorText()}
+                  normalColorText={this.normalThemeColorText()}
+                  lightColorText={this.lightThemeColorText()}
+                  navigateToNewListItemInput={() =>
+                    this.props.navigation.navigate("NewListItemInput", {
+                      listId: index,
+                      name: list.name,
+                      darkColor: this.darkThemeColor(),
+                      normalColor: this.normalThemeColor(),
+                      lightColor: this.lightThemeColor(),
+                      lightColorText: this.lightThemeColorText(),
+                      normalColorText: this.normalThemeColorText(),
+                      borderColor: this.borderColor()
+                    })
+                  }
+                  turnOffToggle={this.turnOffToggle}
+                  totalPrice={list.totalPrice}
+                />
+              ))}
+            </View>
+          )}
+        </ScrollView>
       </SafeAreaView>
+    ) : (
+      <AppLoading
+        startAsync={this.componentDidMount}
+        onFinish={() => {
+          this.setState({ fontLoaded: true });
+        }}
+        onError={console.warn}
+      />
     );
   }
 }
@@ -698,6 +703,34 @@ const styles = StyleSheet.create({
     color: "#DDAA36"
   },
 
+  darkOrange: {
+    backgroundColor: "#a85618"
+  },
+
+  darkOrangeText: {
+    color: "#a85618"
+  },
+
+  lightOrange: {
+    backgroundColor: "#ffaa69"
+  },
+
+  lightOrangeText: {
+    color: "#ffaa69"
+  },
+
+  orange: {
+    backgroundColor: "#ff8121"
+  },
+
+  orangeBorder: {
+    borderColor: "#ff8121"
+  },
+
+  orangeText: {
+    color: "#ff8121"
+  },
+
   //colors for themes ----------------------------------
 
   homeContainer: {
@@ -774,20 +807,17 @@ const styles = StyleSheet.create({
   hideTopBtn: {
     position: "absolute",
     bottom: -20,
-    width: 34,
-    height: 34,
-    alignItems: "center",
+    width: 42,
+    height: 42,
     justifyContent: "center",
+    alignItems: "center",
     borderRadius: 100,
-    shadowOffset: { width: 0, height: 3 },
-    shadowColor: "black",
-    shadowOpacity: 0.15
+    backgroundColor: "white"
   },
 
-  arrowDownBtn: {
-    position: "absolute",
-    top: 5
-  },
+  arrowDownBtn: { position: "absolute", top: 2, right: 5 },
+
+  arrowUpBtn: { position: "absolute", top: 2, right: 5 },
 
   listsEmptyMsg: {
     fontSize: 16.5,
